@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { desc } from 'drizzle-orm';
 import { matches } from '../db/schema.js';
 import { db } from '../db/db.js';
 import { getMatchStatus } from '../utils/match-status.js';
@@ -12,26 +13,26 @@ matchRouter.get('/', async (req, res) => {
     const parsed = listMatchesQuerySchema.safeParse(req.query);
 
     if(!parsed.success) {
-        return res.status(400).json({ error: 'Invalid query', details: parsed.error.issues});
+        return res.status(400).json({ error: 'Invalid query', details: parsed.error});
     }
 
     const limit = Math.min(parsed.data.limit ??  50, MAX_LIMIT);
 
     try {
-        const matches = await db.select()
-        .from(matches)
-        .orderBy(desc(matches.createdAt))
-        .limit(limit);
-        return res.status(200).json({data: matches});
+        const matchList = await db.select()
+            .from(matches)
+            .orderBy(desc(matches.createdAt))
+            .limit(limit);
+        return res.status(200).json({ data: matchList });
     } catch (error) {
-        return res.status(500).json({ error: 'Failed to list matches', details: parsed.error.issues});
+        return res.status(500).json({ error: 'Failed to list matches', details: parsed.error });
     }
 });
 
 matchRouter.post('/', async (req, res) => {
     const parsed = createMatchSchema.safeParse(req.body);
     if(!parsed.success) {
-        return res.status(400).json({ error: 'Invalid payload', details: parsed.error.issues});
+        return res.status(400).json({ error: 'Invalid payload', details: parsed.error});
     }
     const { data: {startTime, endTime, homeScore, awayScore}} = parsed;
     
@@ -53,7 +54,7 @@ matchRouter.post('/', async (req, res) => {
         return res.status(201).json({data: event});
 
     } catch (error) {
-        return res.status(500).json({ error: 'Failed to create match', details: JSON.stringify(error)});
+        return res.status(500).json({ error: 'Failed to create match', details: parsed.error});
     }
 });
 
