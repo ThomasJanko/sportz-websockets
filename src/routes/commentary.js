@@ -23,7 +23,7 @@ commentaryRouter.get('/', async (req, res) => {
 
     try {
         const { id: matchId } = paramsResult.data;
-        const { limit = 10 } = queryResult.data;
+        const { limit = MAX_LIMIT } = queryResult.data;
 
         const safeLimit = Math.min(limit, MAX_LIMIT);
 
@@ -62,7 +62,7 @@ commentaryRouter.post('/', async (req, res) => {
             ...rest
         }).returning();
 
-        if(res.app.locals.broadcastCommentary) {
+        if(res.app.locals.broadcastCommentary) { 
             res.app.locals.broadcastCommentary(result.matchId, result);
         }
 
