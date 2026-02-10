@@ -9,13 +9,15 @@
     "dev": "node --watch src/index.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:demo": "node src/crud-demo.js"
+    "db:demo": "node src/crud-demo.js",
+    "db:seed": "node src/seed/seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "apminsight": "^5.3.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
